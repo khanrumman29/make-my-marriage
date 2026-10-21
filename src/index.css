@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-canvas: #F8F6F0;
+    --color-surface: #FFFFFF;
+    --color-forest: #24483F;
+    --color-gold: #B79A62;
+    --color-ink: #252923;
+    --color-border: #E7E4DB;
+  }
+
+  body {
+    background-color: #F8F6F0;
+    color: #252923;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Custom subtle scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #F8F6F0;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #D5D0C3;
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #B79A62;
+  }
+}
+
+@layer components {
+  /* Warm subtle card style */
+  .card-warm {
+    background-color: #FFFFFF;
+    border: 1px solid #E7E4DB;
+    border-radius: 16px;
+    box-shadow: 0 1px 3px 0 rgba(37, 41, 35, 0.03);
+  }
+
+  /* Subtle gold accent border */
+  .border-gold-accent {
+    border-color: rgba(183, 154, 98, 0.35);
+  }
+}
