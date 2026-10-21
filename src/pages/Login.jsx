@@ -18,9 +18,32 @@ export function Login() {
 
   const from = location.state?.from?.pathname || '/dashboard';
 
+  const [resendingEmail, setResendingEmail] = useState(false);
+  const [resendStatus, setResendStatus] = useState('');
+
+  const handleResendConfirmation = async () => {
+    if (!email) return;
+    setResendingEmail(true);
+    setResendStatus('');
+    try {
+      const { supabase } = await import('../lib/supabase');
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email,
+      });
+      if (error) throw error;
+      setResendStatus('Confirmation email sent! Please check your inbox and spam folder.');
+    } catch (err) {
+      setResendStatus(err.message || 'Failed to resend confirmation email.');
+    } finally {
+      setResendingEmail(false);
+    }
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
+    setResendStatus('');
     setSubmitting(true);
 
     try {
@@ -42,9 +65,29 @@ export function Login() {
       </div>
 
       {error && (
-        <div className="p-3 bg-red-50 border border-red-200 rounded-control flex items-start gap-2.5 text-xs text-danger">
-          <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-          <span>{error}</span>
+        <div className="p-3.5 bg-red-50 border border-red-200 rounded-control flex flex-col gap-2 text-xs text-danger">
+          <div className="flex items-start gap-2.5">
+            <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+            <span className="font-medium">{error}</span>
+          </div>
+          {error.toLowerCase().includes('email not confirmed') && (
+            <div className="pl-6 pt-1 border-t border-red-200/60 flex flex-col gap-2">
+              <p className="text-[11px] text-muted">
+                Supabase requires email confirmation by default. You can check your inbox, or disable email confirmation in Supabase Dashboard.
+              </p>
+              <button
+                type="button"
+                onClick={handleResendConfirmation}
+                disabled={resendingEmail}
+                className="self-start text-xs font-semibold text-forest hover:underline disabled:opacity-50"
+              >
+                {resendingEmail ? 'Sending email...' : '✉️ Resend Confirmation Email'}
+              </button>
+              {resendStatus && (
+                <p className="text-[11px] text-forest font-medium">{resendStatus}</p>
+              )}
+            </div>
+          )}
         </div>
       )}
 
